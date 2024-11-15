@@ -1,16 +1,6 @@
-import { useState } from "react";
-import { Box, TextareaAutosize, TextField } from "@mui/material";
-
+import Editor from "./editor/Editor";
 function App() {
-  const [value, setValue] = useState("");
-  return (
-    <>
-      <Box>
-        <Box sx={{ display: "flex" }}>B</Box>
-        <TextareaAutosize placeholder="start editing" />
-      </Box>
-    </>
-  );
+  return <Editor />;
 }
 
 export default App;
