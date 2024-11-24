@@ -6,13 +6,13 @@ const Editor = () => {
   const [value, setValue] = useState("<p>Start editing...</p>");
   const [htmlValue, setHtmlValue] = useState("<p>Start editing...</p>");
 
-  // Function to apply text formatting based on selected text and command type
+  // Function to apply text formatting
   const formatText = (command) => {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
+
     if (!range) return;
 
-    // Create elements for formatting
     let wrapNode;
     switch (command) {
       case "bold":
@@ -33,35 +33,36 @@ const Editor = () => {
         return;
     }
 
-    // Wrap the selected text with the chosen formatting
+    // Wrap selected text with the chosen formatting
     wrapNode.appendChild(range.extractContents());
     range.insertNode(wrapNode);
 
     // Clear selection after formatting
     selection.removeAllRanges();
 
-    // Update the state
+    // Update content
     updateContent();
   };
 
-  // Function to update the content in the states
+  // Function to update content in the editor
   const updateContent = () => {
-    const editorContent = editorRef.current.innerText; // Plain text content
-    const editorHTMLContent = editorRef.current.innerHTML; // HTML content
-
-    setValue(editorContent);
-    setHtmlValue(editorHTMLContent);
+    if (editorRef.current) {
+      setValue(editorRef.current.innerText); // Plain text content
+      setHtmlValue(editorRef.current.innerHTML); // HTML content
+    }
   };
 
   // Ensure paragraphs are wrapped when "Enter" is pressed
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevent default behavior to insert a div or br
-      document.execCommand("insertParagraph", false, null);
+      e.preventDefault(); // Prevent default behavior
+      const paragraph = document.createElement("p");
+      editorRef.current.appendChild(paragraph);
       updateContent();
     }
   };
 
+  // Handle input to update content
   const handleInput = () => {
     updateContent();
   };
@@ -90,10 +91,11 @@ const Editor = () => {
         contentEditable="true"
         ref={editorRef}
         onInput={handleInput}
-        onKeyDown={handleKeyDown} // Replaced onKeyPress with onKeyDown
+        onKeyDown={handleKeyDown}
         suppressContentEditableWarning={true}
-        dangerouslySetInnerHTML={{ __html: htmlValue }} // Set initial value as HTML
-      ></div>
+      >
+        <p>Start editing...</p>
+      </div>
 
       {/* Display plain text and HTML content */}
       <div id="output">
